@@ -4,6 +4,9 @@ author: "Courtney Miller"
 date: "11/9/2020"
 output: html_document
 ---
+Data from [2019 world happiness data can be found on kaggle](https://www.kaggle.com/unsdsn/world-happiness)
+
+Learning materials inspired by [unsupervided learning in r course on DataCamp](https://learn.datacamp.com/courses/unsupervised-learning- in-r)
 
 ```{r setup, include=FALSE}
 library(ggplot2)
