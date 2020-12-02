@@ -6,8 +6,43 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
+library(ggplot2)
+library(readr)
+
+happiness <- read_csv("2019.csv")
+
+# Determine which columns you will use for clustering 
+happiness <- happiness[,-c(1,2,3)]
 
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+```{r}
+
+set.seed(111711)
+
+# Vector that will store performance for each k
+modelWithiness <- c()
+# Determine what number of clusters we should use as our approximation 
+for(i in 1:10) {
+  kmeans.model <- kmeans(happiness, centers=i, nstart=30)
+  modelWithiness <- append(modelWithiness, kmeans.model$tot.withinss)
+}
+
+# Make the elow plot 
+nums <- c(1:10)
+ggplot(data.frame(nums, modelWithiness), aes(x=nums,y=modelWithiness)) + 
+    geom_line() + geom_point() + scale_x_discrete(limits=nums) + labs(y = "w/in group sum of squared error", x= "number of clusters", title = "elbow plot!", subtitle = "aka Skree plot") + theme_minimal()
+
+
+# Construct model with 3 clusters
+kmeans.real.model <- kmeans(happiness, centers = 3, nstart = 30)
+
+# Check out the model
+kmeans.real.model
+
+# Visualizing GDP Per Capita vs Social Support grouped by cluster 
+ggplot(data=happiness, aes(x=happiness$`GDP per capita`, y=happiness$`Social support`, col = as.factor(kmeans.real.model$cluster))) + geom_point() +  labs(y = "Social Support", x= "GDP per Capita", title = "K-means clustering of countries by happiness criteria with 3 clusters") + scale_color_manual(breaks = c("1", "2", "3"), values=c("red", "blue", "green"))  + theme_minimal()
+
+```
 
